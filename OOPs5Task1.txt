@@ -1,0 +1,116 @@
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        CalculatorModel model = new CalculatorModelImpl();
+        CalculatorView view = new ConsoleCalculatorView();
+        CalculatorPresenter presenter = new CalculatorPresenter(model, view);
+
+        presenter.performCalculation();
+    }
+}
+
+public interface CalculatorModel {
+    double performOperation(double operand1, double operand2, String operator);
+}
+
+public class CalculatorModelImpl implements CalculatorModel {
+    @Override
+    public double performOperation(double operand1, double operand2, String operator) {
+        double result = 0;
+        switch (operator) {
+            case "+":
+                result = operand1 + operand2;
+                break;
+            case "-":
+                result = operand1 - operand2;
+                break;
+            case "*":
+                result = operand1 * operand2;
+                break;
+            case "/":
+                result = operand1 / operand2;
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid operator: " + operator);
+        }
+        return result;
+    }
+}
+
+public interface CalculatorView {
+    void showResult(String result);
+    void showError(String error);
+    double getOperand1();
+    double getOperand2();
+    String getOperator();
+}
+
+public class ConsoleCalculatorView implements CalculatorView {
+    private Scanner scanner;
+
+    public ConsoleCalculatorView() {
+        scanner = new Scanner(System.in);
+    }
+
+    public void showResult(String result) {
+        System.out.println("Result: " + result);
+    }
+
+    public void showError(String error) {
+        System.err.println("Error: " + error);
+    }
+
+    public double getOperand1() {
+        System.out.print("Enter operand 1: ");
+        return validateInput(scanner.nextDouble());
+    }
+
+    public double getOperand2() {
+        System.out.print("Enter operand 2: ");
+        return validateInput(scanner.nextDouble());
+    }
+
+    public String getOperator() {
+        System.out.print("Enter operator (+, -, *, /): ");
+        String operator = scanner.next();
+        while (!operator.matches("[+\\-*/]")) {
+            System.out.print("Invalid operator. Enter operator (+, -, *, /): ");
+            operator = scanner.next();
+        }
+        return operator;
+    }
+    
+    private double validateInput(double input) {
+        // Add input validation logic here if necessary
+        return input;
+    }
+
+    protected void finalize() {
+        scanner.close();
+    }
+}
+
+public class CalculatorPresenter {
+    private CalculatorModel model;
+    private CalculatorView view;
+
+    public CalculatorPresenter(CalculatorModel model, CalculatorView view) {
+        this.model = model;
+        this.view = view;
+    }
+
+    public void performCalculation() {
+        double operand1 = view.getOperand1();
+        double operand2 = view.getOperand2();
+        String operator = view.getOperator();
+
+        double result;
+        try {
+            result = model.performOperation(operand1, operand2, operator);
+            view.showResult(String.valueOf(result));
+        } catch (Exception e) {
+            view.showError(e.getMessage());
+        }
+    }
+}
