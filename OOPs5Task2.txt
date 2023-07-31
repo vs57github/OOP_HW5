@@ -1,0 +1,142 @@
+//User Model
+public class User {
+    private String name;
+    private String login;
+    private String password;
+
+    public User(String name, String login, String password) {
+        this.name = name;
+        this.login = login;
+        this.password = password;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void save() {
+        System.out.println("Saving user data...");
+    }
+
+    public void load() {
+        System.out.println("Loading user data...");
+    }
+}
+//User View
+public class UserView {
+    public void displayRegistrationForm() {
+        System.out.println("Displaying registration form...");
+    }
+
+    public void displayLoginForm() {
+        System.out.println("Displaying login form...");
+    }
+
+    public void displayPasswordChangeForm() {
+        System.out.println("Displaying password change form...");
+    }
+
+    public String getNameInput() {
+        return "John Doe";
+    }
+
+    public String getLoginInput() {
+        return "johndoe";
+    }
+
+    public String getPasswordInput() {
+        return "password123";
+    }
+
+    public void displayMessage(String message) {
+        System.out.println(message);
+    }
+}
+//UserPresenter
+public class UserPresenter {
+    private User model;
+    private UserView view;
+
+    public UserPresenter(User model, UserView view) {
+        this.model = model;
+        this.view = view;
+    }
+
+    public void registerUser() {
+        view.displayRegistrationForm();
+        String name = view.getNameInput();
+        String login = view.getLoginInput();
+        String password = view.getPasswordInput();
+        model.setName(name);
+        model.setLogin(login);
+        model.setPassword(password);
+        model.save();
+        view.displayMessage("Registration successful!");
+    }
+
+    public void loginUser() {
+        view.displayLoginForm();
+        String login = view.getLoginInput();
+        String password = view.getPasswordInput();
+        if (login.equals(model.getLogin()) && password.equals(model.getPassword())) {
+            view.displayMessage("Login successful!");
+        } else {
+            view.displayMessage("Invalid credentials!");
+        }
+    }
+
+    public void changePassword() {
+        view.displayPasswordChangeForm();
+        String currentPassword = view.getPasswordInput();
+        String newPassword = view.getPasswordInput();
+        if (currentPassword.equals(model.getPassword())) {
+            model.setPassword(newPassword);
+            model.save();
+            view.displayMessage("Password change successful!");
+        } else {
+            view.displayMessage("Invalid current password!");
+        }
+    }
+}
+// UserManagementApp
+public class UserManagementApp {
+    public static void main(String[] args) {
+        // Create User
+        User user = new User("", "", "");
+
+        // Create UserView
+        UserView userView = new UserView();
+
+        // Create UserPresenter
+        UserPresenter userPresenter = new UserPresenter(user, userView);
+
+        // Register user
+        userPresenter.registerUser();
+
+        // Log in user
+        userPresenter.loginUser();
+
+        // Change password
+        userPresenter.changePassword();
+    }
+}
